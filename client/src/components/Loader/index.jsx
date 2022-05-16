@@ -1,10 +1,8 @@
 const Loader = () => {
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <h1 className="navbar-brand">
-                Spinner
-            </h1>
-        </nav>
+        <div className="flex justify-center items-center py-3">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-700" />
+        </div>
     )
 }
 
