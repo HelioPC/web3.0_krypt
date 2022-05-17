@@ -1,19 +1,21 @@
+import React, { useContext } from 'react';
 import { AiFillPlayCircle } from 'react-icons/ai'
 import { SiEthereum } from 'react-icons/si'
 import { BsInfoCircle } from 'react-icons/bs'
 import Loader from '../Loader';
 
+import { TransactionContext } from '../../context/TransactionContext';
+
 const commonStyles = 
     'min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center\
     items-center border-[0.5px] border-gray-400 text-white';
 
-const Input = ({ placeholder, name, type, value, handleChange }) => {
+const Input = ({ placeholder, name, type, handleChange }) => {
     return (
         <input
             placeholder={placeholder}
             name={name}
             type={type}
-            value={value}
             onChange={(e) => handleChange(e, name)}
             className="my-2 w-full rounded-sm p-2 outline-none bg-transparent border-none text-white text-sm white-glassmorphism"
             step={0.0001}
@@ -22,11 +24,17 @@ const Input = ({ placeholder, name, type, value, handleChange }) => {
 }
 
 const Welcome = () => {
-    const connectWallet = () => {
-        window.location.href = 'https://metamask.io/'
-    }
+    const { connectWallet, currentAccount, formData, sendTransaction, handleChange } = useContext(TransactionContext);
 
-    const handleSubmit = () => {}
+    const handleSubmit = (e) => {
+        const { addressTo, amount, keyword, message } = formData;
+
+        e.preventDefault();
+
+        if(!addressTo || !amount || !keyword || !message) return;
+
+        sendTransaction({ addressTo, amount, keyword, message });
+    }
 
     return (
         <div className="flex w-full justify-center items-center">
@@ -38,15 +46,17 @@ const Welcome = () => {
                     <p className='text-white text-left mt-5 font-light md:w-9/12 w-11/12 text-base'>
                         Explore the crypto world. Buy and sell cryptocurrencies easily with Krypto
                     </p>
-                    <button
-                        type='button'
-                        onClick={connectWallet}
-                        className='flex flex-row justify-center items-center my-5 bg-[#2952e3] rounded-full p-3 cursor-pointer hover:bg-[#2546bd]'
-                    >
-                        <p className="text-white text-base font-semibold">
-                            Connect your wallet
-                        </p>
-                    </button>
+                    {!currentAccount && (
+                        <button
+                            type='button'
+                            onClick={connectWallet}
+                            className='flex flex-row justify-center items-center my-5 bg-[#2952e3] rounded-full p-3 cursor-pointer hover:bg-[#2546bd]'
+                        >
+                            <p className="text-white text-base font-semibold">
+                                Connect your wallet
+                            </p>
+                        </button>
+                    )}
 
                     <div className="grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
                         <div className={`rounded-tl-2xl ${commonStyles}`}>
@@ -95,29 +105,25 @@ const Welcome = () => {
                             placeholder="Enter your address"
                             name="addressTo"
                             type="text"
-                            value=""
-                            handleChange={() => {}}
+                            handleChange={handleChange}
                         />
                         <Input
                             placeholder="Enter amount (ETH)"
                             name="amount"
                             type="number"
-                            value=""
-                            handleChange={() => {}}
+                            handleChange={handleChange}
                         />
                         <Input
                             placeholder="Enter keyword (GIF)"
                             name="keyword"
                             type="text"
-                            value=""
-                            handleChange={() => {}}
+                            handleChange={handleChange}
                         />
                         <Input
                             placeholder="Enter message"
                             name="message"
                             type="text"
-                            value=""
-                            handleChange={() => {}}
+                            handleChange={handleChange}
                         />
 
                         <div className='h-[1px] w-full bg-gray-400 my-2' />
